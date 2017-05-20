@@ -1,1 +1,1 @@
-# ml-letters-2017
+# LETTERS IMAGE RECOGNITION
