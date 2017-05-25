@@ -1,2 +1,2 @@
-def test_model(model, test_filepath, output_filepath):
+def test_model(classifier, test_filepath, output_filepath):
     pass
