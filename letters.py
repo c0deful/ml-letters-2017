@@ -1,17 +1,18 @@
-from train import train_model
+import tensorflow as tf
+
 from test import test_model
+from train import train_model
+
+# hide everything from tensorflow but errors
+tf.logging.set_verbosity(tf.logging.ERROR)
 
 
 def main():
-    # TODO make this interactive for final solution
-    # train_filepath = raw_input("Enter the training batch file path:\n")
-    # test_filepath = raw_input("Enter the testing batch file path:\n")
-    # output_filepath = raw_input("Enter the output file path:\n")
-    train_filepath = "data/letter-recognition-train.csv"
-    test_filepath = "data/letter-recognition-test-without-decisions.csv"
-    output_filepath = "out"
-    classifier = train_model(train_filepath)
-    test_model(classifier, test_filepath, output_filepath)
+    train_file = raw_input("Enter the training batch file path:\n")
+    test_file = raw_input("Enter the testing batch file path:\n")
+    output_file = raw_input("Enter the output file path:\n")
+    classifier = train_model(train_file)
+    test_model(classifier, test_file, output_file)
     print "Done!"
 
 
