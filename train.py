@@ -13,37 +13,42 @@ def get_accuracy(classifier, data):
 
 def train_model(filename, validation_ratio=0.):
     # define model to be trained
-    columns = [tf.contrib.layers.real_valued_column(str(col))
+    columns = [tf.contrib.layers.real_valued_column(str(col),
+                                                    dtype=tf.int8)
                for col in FEATURE_COLS]
     classifier = tf.contrib.learn.DNNClassifier(
         feature_columns=columns,
-        hidden_units=[200, 200],
+        hidden_units=[150, 150],
         n_classes=N_LABELS,
-        dropout=0.5)
+        dropout=0.25)
 
     # load and split data
-    print "Loading training data."
+    print 'Loading training data.'
     data = load_batch(filename)
     overall_size = data.shape[0]
-    validation_size = int(overall_size * validation_ratio)
-    learn_size = overall_size - validation_size
+    learn_size = int(overall_size * (1 - validation_ratio))
     learn, validation = np.array_split(data, [learn_size])
-    print "Finished loading data. Samples count = {}".format(overall_size)
+    print 'Finished loading data. Samples count = {}'.format(overall_size)
 
     # learning
-    print "Starting training using batch of size {}".format(learn_size)
+    print 'Training using batch of size {}'.format(learn_size)
     classifier.fit(input_fn=lambda: pipeline(learn),
                    steps=learn_size)
-    accuracy = get_accuracy(classifier, learn)
-    print "Accuracy on learning samples = {}".format(accuracy)
 
-    # validation
-    if validation_size > 0:
-        print "Starting validation using batch of size {}".format(validation_size)
-        accuracy = get_accuracy(classifier, validation)
-        print "Accuracy on validation samples = {}".format(accuracy)
+    if validation_ratio > 0:
+        validate_model(classifier, learn, validation)
 
     return classifier
 
-if __name__ == "__main__":
-    train_model("data/letter-recognition-train.csv", 0.3)
+
+def validate_model(classifier, learn_data, validation_data):
+    accuracy = get_accuracy(classifier, learn_data)
+    print 'Accuracy on learning samples = {}'.format(accuracy)
+
+    print 'Validating using batch of size {}'.format(validation_data.shape[0])
+    accuracy = get_accuracy(classifier, validation_data)
+    print 'Accuracy on validation samples = {}'.format(accuracy)
+
+
+if __name__ == '__main__':
+    train_model('data/letter-recognition-train.csv', 0.3)
