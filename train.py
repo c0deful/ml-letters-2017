@@ -18,9 +18,9 @@ def train_model(filename, validation_ratio=0.):
                for col in FEATURE_COLS]
     classifier = tf.contrib.learn.DNNClassifier(
         feature_columns=columns,
-        hidden_units=[150, 150],
+        hidden_units=[100, 100],
         n_classes=N_LABELS,
-        dropout=0.25)
+        dropout=0.3)
 
     # load and split data
     print 'Loading training data.'
